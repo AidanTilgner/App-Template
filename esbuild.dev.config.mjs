@@ -2,8 +2,16 @@ import * as esbuild from "esbuild";
 import { sassPlugin, postcssModules } from "esbuild-sass-plugin";
 import { config } from "dotenv";
 import http from "http";
+import { exec } from "child_process";
 
 config();
+
+const openBrowserTab = async () => {
+    const url = `http://localhost:${process.env.PORT || 3000}`;
+    const cmd = process.platform === "win32" ? "start" : "open";
+    console.info(`Opening ${url} in browser...`);
+    exec(`${cmd} ${url}`);
+}
 
 const watch = async () => {
     const ctx = await esbuild.context({
@@ -66,5 +74,6 @@ const watch = async () => {
     });
     await ctx.watch();
     console.info("Served and Watching...");
+    openBrowserTab();
 };
 watch();
