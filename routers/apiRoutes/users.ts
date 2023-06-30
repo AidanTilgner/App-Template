@@ -7,17 +7,19 @@ const router = Router();
 const userRouterLogger = new Logger({ name: "User Router" });
 const userController = new UserController();
 
-router.get("/", checkToken, checkAdmin, async (_, res) => {
+router.get("/me", checkToken, async (req, res) => {
   try {
-    const users = await userController.list();
-    if (!users) {
+    const response = await userController.me(req.body.decoded);
+
+    if (!response) {
       return res.status(404).json({
-        message: "No users found",
+        message: "User not found",
       });
     }
 
     return res.status(200).json({
-      users,
+      message: "User found",
+      data: response,
     });
   } catch (error) {
     userRouterLogger.error(error);
@@ -29,7 +31,9 @@ router.get("/", checkToken, checkAdmin, async (_, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const response = await userController.signup(req.body);
+    const response = await userController.signup({
+      ...req.body,
+    });
     if (!response) {
       return res.status(500).json({
         message: "Internal server error",
@@ -114,6 +118,26 @@ router.post("/refresh", checkToken, async (req, res) => {
   }
 });
 
+router.get("/", checkToken, checkAdmin, async (_, res) => {
+  try {
+    const users = await userController.list();
+    if (!users) {
+      return res.status(404).json({
+        message: "No users found",
+      });
+    }
+
+    return res.status(200).json({
+      users,
+    });
+  } catch (error) {
+    userRouterLogger.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
+
 router.get("/:id", checkToken, checkAdmin, async (req, res) => {
   try {
     const response = await userController.read(req.params.id);
@@ -170,28 +194,6 @@ router.delete("/:id", checkToken, checkAdmin, async (req, res) => {
 
     return res.status(200).json({
       message: "User deleted",
-      data: response,
-    });
-  } catch (error) {
-    userRouterLogger.error(error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-});
-
-router.get("/me", checkToken, async (req, res) => {
-  try {
-    const response = await userController.me(req.body.decoded);
-
-    if (!response) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-    return res.status(200).json({
-      message: "User found",
       data: response,
     });
   } catch (error) {

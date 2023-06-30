@@ -1,9 +1,12 @@
+@use "../styles/partials/mixins" as *;
+
 .formContainer {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px 24px;
+  @include backgroundRadial;
 }
 
 .form {

@@ -3,7 +3,7 @@ import useFetch from "../Hooks/useFetch";
 import { User } from "../declarations/main";
 import styles from "./Authform.module.scss";
 import { useUser } from "../Contexts/User";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = React.useState({
@@ -12,6 +12,9 @@ function SignUp() {
     firstName: "",
     lastName: "",
   });
+  const [passwordConfirm, setPasswordConfirm] = React.useState("");
+
+  const [query] = useSearchParams();
 
   const { load: signup } = useFetch<
     {
@@ -37,24 +40,36 @@ function SignUp() {
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     console.log("Submitting form", formData);
-    if (!formData.email || !formData.password) {
-      alert("Please fill in all fields");
+    if (
+      !formData.email ||
+      !formData.password ||
+      !formData.firstName ||
+      !formData.lastName
+    ) {
+      window.alert("Please fill in all fields");
+      return;
+    }
+    if (formData.password !== passwordConfirm) {
+      window.alert("Passwords do not match");
       return;
     }
     signup()
       .then((res) => {
-        console.log("Signup response", res);
+        console.log("Signup response", res.data);
         if (!res.data?.accessToken || !res.data?.refreshToken) {
-          alert("SignUp failed");
+          window.alert("SignUp failed");
           return;
         }
         localStorage.setItem("accessToken", res.data?.accessToken);
         localStorage.setItem("refreshToken", res.data?.refreshToken);
+        if (query.get("redirectUrl")) {
+          window.location.href = query.get("redirectUrl")!;
+        }
         loadUser();
       })
       .catch((err) => {
         console.log("SignUp error", err);
-        alert("SignUp failed");
+        window.alert("SignUp failed");
       });
   };
 
@@ -88,6 +103,19 @@ function SignUp() {
               }
               placeholder="Your password..."
             />
+          </div>
+          <div className="formGroup">
+            <label htmlFor="passwordConfirm">Confirm password</label>
+            <input
+              type="password"
+              id="passwordConfirm"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder="Confirm your password..."
+            />
+            {formData.password !== passwordConfirm && (
+              <p className="formError">Passwords do not match</p>
+            )}
           </div>
           <div className="formGroup">
             <label htmlFor="firstName">First name</label>

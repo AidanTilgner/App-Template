@@ -56,6 +56,7 @@ function useFetch<B, D>({
 
   const load = useCallback(
     async (loadConfig?: { updatedUrl?: string; updatedBody?: B }) => {
+      refreshHeaders();
       onBefore && onBefore();
       setLoading(true);
       return api<DefaultResponse<D>>(loadConfig?.updatedUrl || urlToUse, {
@@ -90,11 +91,20 @@ function useFetch<B, D>({
     [urlToUse, method, body, headers, bustCache, ...dependencies]
   );
 
+  const refreshHeaders = () => {
+    api.defaults.headers["Authorization"] = `Bearer ${localStorage.getItem(
+      "accessToken"
+    )}`;
+    api.defaults.headers["x-refresh-token"] =
+      localStorage.getItem("refreshToken");
+  };
+
   useEffect(() => {
     if (
       runOnMount ||
       (runOnDependencies.length > 0 && runOnDependencies.every((dep) => !!dep))
     ) {
+      refreshHeaders();
       load({
         updatedUrl: urlToUse,
         updatedBody: body,

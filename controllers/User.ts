@@ -147,9 +147,6 @@ export default class UserController extends Controller<User> {
       if (!data.lastName) {
         throw new Error("No lastName provided");
       }
-      if (!data.role) {
-        throw new Error("No role provided");
-      }
       const hashedPswd = await hashPassword(data.password);
       if (!hashedPswd) {
         throw new Error("Error hashing password");
@@ -159,10 +156,16 @@ export default class UserController extends Controller<User> {
       user.password = hashedPswd;
       user.firstName = data.firstName;
       user.lastName = data.lastName;
-      user.role = data.role;
+      user.role = "user";
       const savedUser = await this.getRepository()?.save(user);
-      const accessToken = await generateToken(savedUser, { expiresIn: "1h" });
-      const refreshToken = await generateToken(savedUser, { expiresIn: "7d" });
+      const accessToken = await generateToken(
+        { ...savedUser },
+        { expiresIn: "1h" }
+      );
+      const refreshToken = await generateToken(
+        { ...savedUser },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -170,10 +173,11 @@ export default class UserController extends Controller<User> {
       token.token = refreshToken;
       token.user = savedUser;
       this.getDataSource().manager.save(token);
+      const { password, ...userWithoutPassword } = savedUser;
       return {
         accessToken,
         refreshToken,
-        user: savedUser,
+        user: userWithoutPassword,
       };
     } catch (error) {
       this.error(error);
@@ -205,8 +209,11 @@ export default class UserController extends Controller<User> {
       if (!validPassword) {
         throw new Error("Invalid password");
       }
-      const accessToken = await generateToken(user, { expiresIn: "1h" });
-      const refreshToken = await generateToken(user, { expiresIn: "7d" });
+      const accessToken = await generateToken({ ...user }, { expiresIn: "1h" });
+      const refreshToken = await generateToken(
+        { ...user },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -245,8 +252,14 @@ export default class UserController extends Controller<User> {
       if (!token) {
         throw new Error("No token found");
       }
-      const accessToken = await generateToken(token.user, { expiresIn: "1h" });
-      const refreshToken = await generateToken(token.user, { expiresIn: "7d" });
+      const accessToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "1h" }
+      );
+      const refreshToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -280,8 +293,14 @@ export default class UserController extends Controller<User> {
       if (!token) {
         throw new Error("No token found");
       }
-      const accessToken = await generateToken(token.user, { expiresIn: "1h" });
-      const refreshToken = await generateToken(token.user, { expiresIn: "7d" });
+      const accessToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "1h" }
+      );
+      const refreshToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }

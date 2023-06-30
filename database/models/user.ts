@@ -7,7 +7,6 @@ import {
   OneToMany,
 } from "typeorm";
 import RefreshToken from "./token";
-import { comparePassword } from "../../utils/auth";
 
 type Roles = "super_admin" | "admin" | "user";
 

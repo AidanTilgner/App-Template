@@ -1,10 +1,13 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import styles from "./index.module.scss";
 
 function index() {
   return (
-    <div>
-      <Outlet />
+    <div className={styles.main}>
+      <div className={styles.content}>
+        <Outlet />
+      </div>
     </div>
   );
 }

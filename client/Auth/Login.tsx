@@ -3,9 +3,11 @@ import useFetch from "../Hooks/useFetch";
 import { User } from "../declarations/main";
 import styles from "./Authform.module.scss";
 import { useUser } from "../Contexts/User";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 function Login() {
+  const [query] = useSearchParams();
+
   const [formData, setFormData] = React.useState({
     email: "",
     password: "",
@@ -34,23 +36,26 @@ function Login() {
     e.preventDefault();
     console.log("Submitting form", formData);
     if (!formData.email || !formData.password) {
-      alert("Please fill in all fields");
+      window.alert("Please fill in all fields");
       return;
     }
     login()
       .then((res) => {
         console.log("Login response", res);
         if (!res.data?.accessToken || !res.data?.refreshToken) {
-          alert("Login failed");
+          window.alert("Login failed");
           return;
         }
         localStorage.setItem("accessToken", res.data?.accessToken);
         localStorage.setItem("refreshToken", res.data?.refreshToken);
+        if (query.get("redirectUrl")) {
+          window.location.href = query.get("redirectUrl")!;
+        }
         loadUser();
       })
       .catch((err) => {
         console.log("Login error", err);
-        alert("Login failed");
+        window.alert("Login failed");
       });
   };
 

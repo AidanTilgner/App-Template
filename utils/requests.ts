@@ -19,3 +19,18 @@ export const getRequesterInfo = (req: Request) => {
     return undefined;
   }
 };
+
+export const getRequestPath = (req: Request) => {
+  try {
+    const { baseUrl, path, params, query } = req;
+    return {
+      baseUrl,
+      path,
+      params,
+      query,
+    };
+  } catch (error) {
+    requestLogger.error(error);
+    return undefined;
+  }
+};

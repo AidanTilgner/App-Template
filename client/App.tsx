@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Main from "./Layouts/Main";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Main />}>
-          <Route index element={<p>Home</p>} />
+          <Route index element={<Home />} />
         </Route>
       </Routes>
     </div>

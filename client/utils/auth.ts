@@ -1,6 +1,11 @@
 import jwtDecode from "jwt-decode";
 import { api } from "./axios";
 
+export const getLoginUrl = (currentURL: string, reason: string) => {
+  const query = new URLSearchParams({ redirectUrl: currentURL, reason });
+  return `/login?${query.toString()}`;
+};
+
 export const logout = async (reason?: string) => {
   try {
     const decodedToken = jwtDecode(localStorage.getItem("accessToken") || "");
@@ -8,13 +13,12 @@ export const logout = async (reason?: string) => {
     const id = (decodedToken as { id: string | number }).id;
 
     const currentUrl = window.location.href;
-    const reasonQuery = reason ? `&reason=${reason}` : "";
 
     if (!id) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
 
-      window.location.href = "/login?redirectUrl=" + currentUrl + reasonQuery;
+      window.location.href = getLoginUrl(currentUrl, reason || "");
       return;
     }
 
@@ -25,7 +29,7 @@ export const logout = async (reason?: string) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
 
-    window.location.href = "/login?redirectUrl=" + currentUrl + reasonQuery;
+    window.location.href = getLoginUrl(currentUrl, reason || "");
   } catch (err) {
     console.error(err);
 
@@ -33,6 +37,6 @@ export const logout = async (reason?: string) => {
     localStorage.removeItem("refreshToken");
 
     const currentUrl = window.location.href;
-    window.location.href = "/login?redirectUrl=" + currentUrl;
+    window.location.href = getLoginUrl(currentUrl, reason || "");
   }
 };

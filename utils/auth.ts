@@ -1,14 +1,17 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import { hashSync, compareSync } from "bcrypt";
 import Logger from "./logger";
+import { config } from "dotenv";
 
-const secret = process.env.JWT_SECRET;
+config();
+
+const tokenSecret = process.env.TOKEN_SECRET;
 
 const jwtLogger = new Logger({ name: "JWT" });
 
 export const generateToken = async (payload: any, options?: SignOptions) => {
   try {
-    return jwt.sign(payload, secret as string, {
+    return jwt.sign(payload, tokenSecret as string, {
       expiresIn: "1h",
       ...options,
     });
@@ -20,7 +23,7 @@ export const generateToken = async (payload: any, options?: SignOptions) => {
 
 export async function verifyToken<T>(token: string) {
   try {
-    return jwt.verify(token, secret as string) as T;
+    return jwt.verify(token, tokenSecret as string) as T;
   } catch (error) {
     jwtLogger.error(error);
     return undefined;
