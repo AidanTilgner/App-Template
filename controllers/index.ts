@@ -1,10 +1,12 @@
 import { entities, dataSource, Entities } from "../database";
-import { Repository } from "typeorm";
+import { EntityTarget, Repository } from "typeorm";
 import Logger from "../utils/logger";
 
-export default abstract class Controller {
+export default abstract class Controller<
+  E extends Entities | undefined = undefined
+> {
   private dataSource = dataSource;
-  private repository: Repository<Entities> | undefined = undefined;
+  private repository!: E extends Entities ? Repository<E> : undefined;
   private model: keyof typeof entities | undefined = undefined;
   private logger: Logger | undefined = undefined;
   private name: string | undefined = undefined;
@@ -19,7 +21,9 @@ export default abstract class Controller {
     this.dataSource = dataSource;
     if (model) {
       this.model = model;
-      this.repository = this.dataSource.getRepository(entities[model]);
+      this.repository = this.dataSource.getRepository(
+        entities[model]
+      ) as E extends Entities ? Repository<E> : undefined;
     }
     this.name = name;
     this.logger = new Logger({ name: `${name} Controller` });
@@ -61,16 +65,13 @@ export default abstract class Controller {
     this.logger?.info(...args);
   };
 
-  public abstract list(): Promise<Entities[] | undefined | null>;
+  public abstract list?(): Promise<E[] | undefined | null>;
 
-  public abstract create(data: any): Promise<Entities | undefined | null>;
+  public abstract create?(data: any): Promise<E | undefined | null>;
 
-  public abstract read(id: string): Promise<Entities | undefined | null>;
+  public abstract read?(id: string): Promise<E | undefined | null>;
 
-  public abstract update(
-    id: string,
-    data: any
-  ): Promise<Entities | undefined | null>;
+  public abstract update?(id: string, data: any): Promise<E | undefined | null>;
 
-  public abstract delete(id: string): Promise<boolean | undefined | null>;
+  public abstract delete?(id: string): Promise<boolean | undefined | null>;
 }

@@ -1,7 +1,8 @@
 import Controller from ".";
 import { entities } from "../database";
+import User from "../database/models/user";
 
-export default class UserController extends Controller {
+export default class UserController extends Controller<User> {
   constructor() {
     super({ model: "User", name: "User" });
   }
