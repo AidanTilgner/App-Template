@@ -4,10 +4,11 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import { initSocketIO } from "./utils/socket.io";
-import path from "path";
 import applicationRouter from "./routers/application";
+import { initializeDatabase } from "./database";
 
 config();
+initializeDatabase();
 
 const PORT = process.env.PORT || 3000;
 
