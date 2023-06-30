@@ -2,6 +2,7 @@ import { verifyToken } from "../utils/auth";
 import { Request, Response, NextFunction } from "express";
 import Logger from "../utils/logger";
 import { getRequesterInfo } from "../utils/requests";
+import UserController from "../controllers/User";
 
 const authLogger = new Logger({ name: "Auth Middleware" });
 
@@ -21,10 +22,23 @@ export const checkToken = async (
     }
     const decoded = await verifyToken(token);
     if (!decoded) {
-      authLogger.warn("Invalid token", JSON.stringify(requesterInfo));
-      return res.status(401).json({
-        message: "Invalid token",
+      // attempt to refresh token
+      const refreshed = await UserController.refreshStatic({
+        refreshToken: req.headers["x-refresh-token"] as string,
       });
+      if (!refreshed) {
+        authLogger.warn("Invalid token", JSON.stringify(requesterInfo));
+        return res.status(401).json({
+          message: "Invalid token",
+        });
+      }
+      req.body.decoded = await verifyToken(refreshed.accessToken);
+      res.set({
+        "x-refreshed": "true",
+        "x-access-token": refreshed.accessToken,
+        "x-refresh-token": refreshed.refreshToken,
+      });
+      return next();
     }
     req.body.decoded = decoded;
     next();

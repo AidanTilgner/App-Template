@@ -180,4 +180,26 @@ router.delete("/:id", checkToken, checkAdmin, async (req, res) => {
   }
 });
 
+router.get("/me", checkToken, async (req, res) => {
+  try {
+    const response = await userController.me(req.body.decoded);
+
+    if (!response) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "User found",
+      data: response,
+    });
+  } catch (error) {
+    userRouterLogger.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
+
 export default router;

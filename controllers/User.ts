@@ -1,5 +1,5 @@
 import Controller from ".";
-import { entities } from "../database";
+import { dataSource, entities } from "../database";
 import User from "../database/models/user";
 import { comparePassword, generateToken, hashPassword } from "../utils/auth";
 
@@ -263,6 +263,41 @@ export default class UserController extends Controller<User> {
     }
   }
 
+  public static async refreshStatic(data: any) {
+    try {
+      if (!data) {
+        throw new Error("No data provided");
+      }
+      if (!data.refreshToken) {
+        throw new Error("No refreshToken provided");
+      }
+      const token = await dataSource.manager.findOne(entities.RefreshToken, {
+        where: {
+          token: data.refreshToken,
+        },
+        relations: ["user"],
+      });
+      if (!token) {
+        throw new Error("No token found");
+      }
+      const accessToken = await generateToken(token.user, { expiresIn: "1h" });
+      const refreshToken = await generateToken(token.user, { expiresIn: "7d" });
+      if (!accessToken || !refreshToken) {
+        throw new Error("Error generating tokens");
+      }
+      token.token = refreshToken;
+      dataSource.manager.save(token);
+      return {
+        accessToken,
+        refreshToken,
+        user: token.user,
+      };
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+  }
+
   public async logout(data: any) {
     try {
       if (!data) {
@@ -287,6 +322,30 @@ export default class UserController extends Controller<User> {
         return false;
       }
       return true;
+    } catch (error) {
+      this.error(error);
+      return undefined;
+    }
+  }
+
+  public async me(data: any) {
+    try {
+      if (!data) {
+        throw new Error("No data provided");
+      }
+      if (!data.id) {
+        throw new Error("No id provided");
+      }
+      const user = await this.getRepository()?.findOne({
+        where: {
+          id: data.id,
+        },
+        select: ["id", "email", "firstName", "lastName", "role"],
+      });
+      if (!user) {
+        throw new Error("No user found");
+      }
+      return user;
     } catch (error) {
       this.error(error);
       return undefined;
