@@ -36,14 +36,21 @@ app.use(
   }
 );
 
-app.use(applicationRouter);
-
 if (process.env.NODE_ENV === "development") {
   console.info("Development mode.");
+  app.get("/check-server-is-up", (_, res) => {
+    res.send({
+      data: {
+        ok: true,
+      },
+    });
+  });
   app.post("/esbuild-rebuilt", () => {
     connection.emit("esbuild-rebuilt");
   });
 }
+
+app.use(applicationRouter);
 
 server.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
