@@ -1,5 +1,5 @@
 import { entities, dataSource, Entities } from "../database";
-import { EntityTarget, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import Logger from "../utils/logger";
 
 export default abstract class Controller<
