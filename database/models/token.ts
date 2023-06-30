@@ -10,8 +10,8 @@ import User from "./user";
 
 @Entity()
 export default class RefreshToken {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
   @Column({ type: "varchar", length: 255, nullable: false })
   token!: string;

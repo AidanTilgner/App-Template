@@ -1,4 +1,5 @@
 import jwt, { SignOptions } from "jsonwebtoken";
+import { hashSync, compareSync } from "bcrypt";
 import Logger from "./logger";
 
 const secret = process.env.JWT_SECRET;
@@ -25,3 +26,21 @@ export async function verifyToken<T>(token: string) {
     return undefined;
   }
 }
+
+export const hashPassword = async (password: string) => {
+  try {
+    return hashSync(password, 10);
+  } catch (error) {
+    jwtLogger.error(error);
+    return undefined;
+  }
+};
+
+export const comparePassword = async (password: string, hash: string) => {
+  try {
+    return compareSync(password, hash);
+  } catch (error) {
+    jwtLogger.error(error);
+    return undefined;
+  }
+};

@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import RefreshToken from "./token";
+import { comparePassword } from "../../utils/auth";
 
 enum RoleEnum {
   SUPER_ADMIN = "super_admin",
@@ -16,8 +17,8 @@ enum RoleEnum {
 
 @Entity()
 export default class User {
-  @PrimaryGeneratedColumn("uuid")
-  id!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
   @Column({ type: "varchar", length: 255, nullable: false })
   email!: string;

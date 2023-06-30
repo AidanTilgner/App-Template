@@ -35,3 +35,28 @@ export const checkToken = async (
     });
   }
 };
+
+export const checkAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { role } = req.body.decoded;
+    if (role !== "admin") {
+      authLogger.warn(
+        "Unauthorized access",
+        JSON.stringify(getRequesterInfo(req))
+      );
+      return res.status(401).json({
+        message: "Unauthorized access",
+      });
+    }
+    next();
+  } catch (error) {
+    authLogger.error(error, JSON.stringify(getRequesterInfo(req)));
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
