@@ -4,8 +4,9 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import { initSocketIO } from "./utils/socket.io";
-import applicationRouter from "./routers/application";
 import { initializeDatabase } from "./database";
+import applicationRouter from "./routers/application";
+import apiRouter from "./routers/api";
 
 config();
 initializeDatabase();
@@ -51,6 +52,7 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
+app.use("/api", apiRouter);
 app.use(applicationRouter);
 
 server.listen(PORT, () => {

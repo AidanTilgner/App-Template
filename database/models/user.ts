@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import RefreshToken from "./token";
 
 enum RoleEnum {
   SUPER_ADMIN = "super_admin",
@@ -13,14 +15,14 @@ enum RoleEnum {
 }
 
 @Entity()
-export class User {
+export default class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Column({ type: "varchar", length: 255, nullable: false })
   email!: string;
 
-  @Column({ type: "varchar", length: 255, nullable: false })
+  @Column({ type: "varchar", length: 255, nullable: false, select: false })
   password!: string;
 
   @Column({ type: "varchar", length: 255, nullable: true })
@@ -31,6 +33,9 @@ export class User {
 
   @Column({ type: "varchar", length: 255, nullable: false })
   role!: RoleEnum;
+
+  @OneToMany(() => RefreshToken, (token) => token.user)
+  refreshTokens!: RefreshToken[];
 
   @CreateDateColumn()
   createdAt!: Date;
