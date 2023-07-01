@@ -28,7 +28,7 @@ const openBrowserTab = async () => {
         }
       );
       req.on("error", (err) => {
-        console.log("Error checking if server is up...", err);
+        console.error("Error checking if server is up...", err);
         resolve(false);
       });
       req.end();

@@ -3,7 +3,7 @@ import useFetch from "../Hooks/useFetch";
 import { User } from "../declarations/main";
 import styles from "./Authform.module.scss";
 import { useUser } from "../Contexts/User";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = React.useState({
@@ -35,11 +35,12 @@ function SignUp() {
     dependencies: [formData],
   });
 
-  const { loadUser } = useUser();
+  const { loadUser, isLoggedIn } = useUser();
+
+  const navigate = useNavigate();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    console.log("Submitting form", formData);
     if (
       !formData.email ||
       !formData.password ||
@@ -55,7 +56,6 @@ function SignUp() {
     }
     signup()
       .then((res) => {
-        console.log("Signup response", res.data);
         if (!res.data?.accessToken || !res.data?.refreshToken) {
           window.alert("SignUp failed");
           return;
@@ -66,12 +66,17 @@ function SignUp() {
           window.location.href = query.get("redirectUrl")!;
         }
         loadUser();
+        navigate("/");
       })
       .catch((err) => {
-        console.log("SignUp error", err);
+        console.error("SignUp error", err);
         window.alert("SignUp failed");
       });
   };
+
+  if (isLoggedIn) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className={styles.formContainer}>

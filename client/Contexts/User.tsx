@@ -36,12 +36,6 @@ export const UserProvider = ({
       navigate("/login");
     },
     runOnMount: localStorage.getItem("accessToken") ? true : false,
-    onSuccess: (res) => {
-      console.log("User loaded", res);
-    },
-    onFinally: () => {
-      console.log("User load finished");
-    },
   });
 
   const value: UserContextValue = useMemo(

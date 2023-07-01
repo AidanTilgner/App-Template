@@ -3,7 +3,7 @@ import useFetch from "../Hooks/useFetch";
 import { User } from "../declarations/main";
 import styles from "./Authform.module.scss";
 import { useUser } from "../Contexts/User";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 function Login() {
   const [query] = useSearchParams();
@@ -30,18 +30,18 @@ function Login() {
     dependencies: [formData],
   });
 
-  const { loadUser } = useUser();
+  const { loadUser, isLoggedIn } = useUser();
+
+  const navigate = useNavigate();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    console.log("Submitting form", formData);
     if (!formData.email || !formData.password) {
       window.alert("Please fill in all fields");
       return;
     }
     login()
       .then((res) => {
-        console.log("Login response", res);
         if (!res.data?.accessToken || !res.data?.refreshToken) {
           window.alert("Login failed");
           return;
@@ -52,12 +52,18 @@ function Login() {
           window.location.href = query.get("redirectUrl")!;
         }
         loadUser();
+
+        navigate("/");
       })
       .catch((err) => {
-        console.log("Login error", err);
+        console.error("Login error", err);
         window.alert("Login failed");
       });
   };
+
+  if (isLoggedIn) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className={styles.formContainer}>
