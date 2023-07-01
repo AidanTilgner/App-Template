@@ -4,10 +4,20 @@ This is my personal favorite way to setup an app. The master branch here is dedi
 
 ### Features
 
-- [x] User Auth
+- [x] User Auth Backend
+- [x] User Auth Frontend
 - [x] React SPA
 - [x] Express Backend
 - [x] Sqlite3 Database, with TypeORM
-- [ ] Easy to use Controllers
-- [ ] Dockerized
-- [ ] Tests
+- [x] Migration Support
+- [x] Detailed Logs
+- [x] Easy to use Controllers
+- [x] Rebuild Script
+
+### Getting Started
+
+Simply clone the repo, then copy `.env.example` into a new `.env` file, filling the values as you see fit. Then run `pnpm install`, and `pnpm run dev` to start the app in development mode. Then go on customizing from there.
+
+### Scripts
+
+Right now there's only one script, the rebuild script. It will pull the latest changes from the remote repo, then run `pnpm install`, and `pnpm run build`. Then, it will run migrations, and restart the pm2 instance. Keep in mind this is intended for use in production, and not development mode. All of your development needs are taken care of with `pnpm run dev`.
