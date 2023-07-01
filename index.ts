@@ -4,10 +4,12 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import { initSocketIO } from "./utils/socket.io";
-import path from "path";
+import { initializeDatabase } from "./database";
 import applicationRouter from "./routers/application";
+import apiRouter from "./routers/api";
 
 config();
+initializeDatabase();
 
 const PORT = process.env.PORT || 3000;
 
@@ -50,6 +52,7 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
+app.use("/api", apiRouter);
 app.use(applicationRouter);
 
 server.listen(PORT, () => {
