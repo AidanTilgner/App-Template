@@ -2,7 +2,10 @@ import jwtDecode from "jwt-decode";
 import { api } from "./axios";
 
 export const getLoginUrl = (currentURL: string, reason: string) => {
-  const query = new URLSearchParams({ redirectUrl: currentURL, reason });
+  const query = new URLSearchParams({
+    redirectUrl: currentURL,
+    reason: reason || "none",
+  });
   return `/login?${query.toString()}`;
 };
 

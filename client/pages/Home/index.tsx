@@ -2,18 +2,19 @@ import React from "react";
 import { useUser } from "../../Contexts/User";
 import { Link } from "react-router-dom";
 import { logout } from "../../utils/auth";
+import styles from "./index.module.scss";
 
 function index() {
   const { isLoggedIn } = useUser();
 
   return (
-    <div>
+    <div className={styles.home}>
       {isLoggedIn ? (
         <p>Looks like you're logged in!</p>
       ) : (
         <p>
           Looks like you're not logged in. <Link to="/login">Login</Link> or{" "}
-          <Link to="/signup">Signup</Link>
+          <Link to="/signup">Signup</Link>.
         </p>
       )}
       {isLoggedIn && (

@@ -39,6 +39,9 @@ export const UserProvider = ({
     onSuccess: (res) => {
       console.log("User loaded", res);
     },
+    onFinally: () => {
+      console.log("User load finished");
+    },
   });
 
   const value: UserContextValue = useMemo(
