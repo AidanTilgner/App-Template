@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@phosphor-icons/react':
+    specifier: ^2.0.13
+    version: 2.0.13(react-dom@18.2.0)(react@18.2.0)
   axios:
     specifier: ^1.4.0
     version: 1.4.0
@@ -446,6 +449,17 @@ packages:
       rimraf: 3.0.2
     dev: false
     optional: true
+
+  /@phosphor-icons/react@2.0.13(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-lRjFfCv4pU8vDnPgZ8/QFzYmAJS08Vx+J2/+Ldh217pXaxvaayBZMC/3EinuMwmMylc97+XYCMPdH+y10I+f0g==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8'
+      react-dom: '>= 16.8'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@remix-run/router@1.6.3:
     resolution: {integrity: sha512-EXJysQ7J3veRECd0kZFQwYYd5sJMcq2O/m60zu1W2l3oVQ9xtub8jTOtYRE0+M2iomyG/W3Ps7+vp2kna0C27Q==}

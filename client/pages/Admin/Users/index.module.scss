@@ -1,0 +1,38 @@
+@use "../../../styles/partials/variables" as *;
+
+.users {
+
+}
+
+.usertable {
+  width: 100%;
+  font-size: 1.8rem;
+
+  th {
+    padding: 1.4rem;
+    text-align: left;
+  }
+
+  td {
+    padding: 1.4rem;
+  }
+
+  .role_superadmin {
+    color: $accentColor;
+  }
+}
+
+.action_btn {
+  background-color: transparent;
+  color: $textColor;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+

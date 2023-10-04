@@ -30,6 +30,9 @@ export default class User {
   @Column({ type: "varchar", length: 255, nullable: false })
   role!: Roles;
 
+  @Column({ type: "boolean", nullable: true })
+  active!: boolean;
+
   @OneToMany(() => RefreshToken, (token) => token.user)
   refreshTokens!: RefreshToken[];
 

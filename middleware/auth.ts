@@ -6,11 +6,7 @@ import UserController from "../controllers/User";
 
 const authLogger = new Logger({ name: "Auth Middleware" });
 
-export const checkToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const checkToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     const requesterInfo = getRequesterInfo(req);
@@ -18,7 +14,7 @@ export const checkToken = async (
       authLogger.warn(
         "No token provided",
         JSON.stringify(requesterInfo),
-        JSON.stringify(getRequestPath(req))
+        JSON.stringify(getRequestPath(req)),
       );
       return res.status(401).json({
         message: "No token provided",
@@ -26,7 +22,6 @@ export const checkToken = async (
     }
     const decoded = await verifyToken(token);
     if (!decoded) {
-      // attempt to refresh token
       const refreshed = await UserController.refreshStatic({
         refreshToken: req.headers["x-refresh-token"] as string,
       });
@@ -34,7 +29,7 @@ export const checkToken = async (
         authLogger.warn(
           "Invalid token",
           JSON.stringify(requesterInfo),
-          JSON.stringify(getRequestPath(req))
+          JSON.stringify(getRequestPath(req)),
         );
         return res.status(401).json({
           message: "Invalid token",
@@ -54,7 +49,7 @@ export const checkToken = async (
     authLogger.error(
       error,
       JSON.stringify(getRequesterInfo(req)),
-      JSON.stringify(getRequestPath(req))
+      JSON.stringify(getRequestPath(req)),
     );
     return res.status(500).json({
       message: "Internal server error",
@@ -62,18 +57,14 @@ export const checkToken = async (
   }
 };
 
-export const checkAdmin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const checkAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { role } = req.body.decoded;
-    if (role !== "admin") {
+    if (!["admin", "superadmin"].includes(role)) {
       authLogger.warn(
         "Unauthorized access",
         JSON.stringify(getRequesterInfo(req)),
-        JSON.stringify(getRequestPath(req))
+        JSON.stringify(getRequestPath(req)),
       );
       return res.status(401).json({
         message: "Unauthorized access",
@@ -84,7 +75,7 @@ export const checkAdmin = async (
     authLogger.error(
       error,
       JSON.stringify(getRequesterInfo(req)),
-      JSON.stringify(getRequestPath(req))
+      JSON.stringify(getRequestPath(req)),
     );
     return res.status(500).json({
       message: "Internal server error",

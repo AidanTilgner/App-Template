@@ -128,7 +128,8 @@ router.get("/", checkToken, checkAdmin, async (_, res) => {
     }
 
     return res.status(200).json({
-      users,
+      message: "Users retrieved.",
+      data: users,
     });
   } catch (error) {
     userRouterLogger.error(error);

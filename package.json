@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@phosphor-icons/react": "^2.0.13",
     "axios": "^1.4.0",
     "axios-cache-interceptor": "^1.2.0",
     "bcrypt": "^5.1.0",

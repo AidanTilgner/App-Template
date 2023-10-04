@@ -23,11 +23,7 @@ export const UserContext = createContext<UserContextValue>({
   loadUser: () => {},
 });
 
-export const UserProvider = ({
-  children,
-}: {
-  children: JSX.Element | JSX.Element[];
-}) => {
+export const UserProvider = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
   const navigate = useNavigate();
 
   const { data: user, load: loadUser } = useFetch<undefined, User>({
@@ -52,7 +48,7 @@ export const UserProvider = ({
       isLoggedIn: !!user?.id,
       loadUser,
     }),
-    [user]
+    [user],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

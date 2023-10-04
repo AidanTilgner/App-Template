@@ -6,8 +6,14 @@ import Main from "./Layouts/Main";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import Home from "./pages/Home";
+import Users from "./pages/Admin/Users";
+import { useUser } from "./Contexts/User";
 
 function App() {
+  const { user } = useUser();
+
+  const role = user.role;
+
   return (
     <div className={styles.App}>
       <Routes>
@@ -15,6 +21,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Main />}>
           <Route index element={<Home />} />
+          {role.includes("admin") && (
+            <Route path="admin">
+              <Route path="users" element={<Users />} />
+            </Route>
+          )}
         </Route>
       </Routes>
     </div>
