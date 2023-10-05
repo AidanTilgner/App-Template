@@ -2,6 +2,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import { hashSync, compareSync } from "bcrypt";
 import Logger from "./logger";
 import { config } from "dotenv";
+import { Roles } from "../database/models/user";
 
 config();
 
@@ -46,4 +47,14 @@ export const comparePassword = async (password: string, hash: string) => {
     jwtLogger.error(error);
     return undefined;
   }
+};
+
+export const hasRole = (role: Roles, usrRole: Roles) => {
+  const roles = ["super_admin", "admin", "user"];
+
+  const roleIndex = roles.indexOf(role);
+
+  const usrRoleIndex = roles.indexOf(usrRole);
+
+  return usrRoleIndex >= roleIndex;
 };

@@ -7,8 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import RefreshToken from "./token";
-
-type Roles = "super_admin" | "admin" | "user";
+export type Roles = "super_admin" | "admin" | "user";
 
 @Entity()
 export default class User {
@@ -30,7 +29,7 @@ export default class User {
   @Column({ type: "varchar", length: 255, nullable: false })
   role!: Roles;
 
-  @Column({ type: "boolean", nullable: true })
+  @Column({ type: "boolean", nullable: true, default: true })
   active!: boolean;
 
   @OneToMany(() => RefreshToken, (token) => token.user)

@@ -2,28 +2,20 @@ import { entities, dataSource, Entities } from "../database";
 import { Repository } from "typeorm";
 import Logger from "../utils/logger";
 
-export default abstract class Controller<
-  E extends Entities | undefined = undefined
-> {
+export default abstract class Controller<E extends Entities | undefined = undefined> {
   private dataSource = dataSource;
   private repository!: E extends Entities ? Repository<E> : undefined;
   private model: keyof typeof entities | undefined = undefined;
   private logger: Logger | undefined = undefined;
   private name: string | undefined = undefined;
 
-  constructor({
-    model,
-    name,
-  }: {
-    model?: keyof typeof entities;
-    name: string;
-  }) {
+  constructor({ model, name }: { model?: keyof typeof entities; name: string }) {
     this.dataSource = dataSource;
     if (model) {
       this.model = model;
-      this.repository = this.dataSource.getRepository(
-        entities[model]
-      ) as E extends Entities ? Repository<E> : undefined;
+      this.repository = this.dataSource.getRepository(entities[model]) as E extends Entities
+        ? Repository<E>
+        : undefined;
     }
     this.name = name;
     this.logger = new Logger({ name: `${name} Controller` });
@@ -67,11 +59,11 @@ export default abstract class Controller<
 
   public abstract list?(): Promise<E[] | undefined | null>;
 
-  public abstract create?(data: any): Promise<E | undefined | null>;
+  public abstract create?(data: any, ...args: any[]): Promise<E | undefined | null>;
 
-  public abstract read?(id: string): Promise<E | undefined | null>;
+  public abstract read?(id: string, ...args: any[]): Promise<E | undefined | null>;
 
-  public abstract update?(id: string, data: any): Promise<E | undefined | null>;
+  public abstract update?(id: string, data: any, ...args: any[]): Promise<E | undefined | null>;
 
-  public abstract delete?(id: string): Promise<boolean | undefined | null>;
+  public abstract delete?(id: string, ...args: any[]): Promise<boolean | undefined | null>;
 }

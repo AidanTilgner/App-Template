@@ -12,7 +12,7 @@ import { useUser } from "./Contexts/User";
 function App() {
   const { user } = useUser();
 
-  const role = user.role;
+  const is_admin = ["superadmin", "admin"].includes(user?.role || "");
 
   return (
     <div className={styles.App}>
@@ -21,7 +21,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Main />}>
           <Route index element={<Home />} />
-          {role.includes("admin") && (
+          {is_admin && (
             <Route path="admin">
               <Route path="users" element={<Users />} />
             </Route>
