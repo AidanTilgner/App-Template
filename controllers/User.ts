@@ -50,7 +50,7 @@ export default class UserController extends Controller<User> {
     }
   }
 
-  public async update(id: string, data: any, allowRoleUpdate = false) {
+  public async update(id: string, data: any) {
     try {
       if (!id || !Number(id)) {
         throw new Error("No id provided");
@@ -78,10 +78,7 @@ export default class UserController extends Controller<User> {
       if (data.lastName) {
         user.lastName = data.lastName;
       }
-      if (data.active !== undefined) {
-        user.active = !!data.active;
-      }
-      if (data.role && allowRoleUpdate) {
+      if (data.role) {
         user.role = data.role;
       }
       return await this.getRepository()?.save(user);
@@ -161,8 +158,14 @@ export default class UserController extends Controller<User> {
       user.lastName = data.lastName;
       user.role = "user";
       const savedUser = await this.getRepository()?.save(user);
-      const accessToken = await generateToken({ ...savedUser }, { expiresIn: "1h" });
-      const refreshToken = await generateToken({ ...savedUser }, { expiresIn: "7d" });
+      const accessToken = await generateToken(
+        { ...savedUser },
+        { expiresIn: "1h" }
+      );
+      const refreshToken = await generateToken(
+        { ...savedUser },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -207,7 +210,10 @@ export default class UserController extends Controller<User> {
         throw new Error("Invalid password");
       }
       const accessToken = await generateToken({ ...user }, { expiresIn: "1h" });
-      const refreshToken = await generateToken({ ...user }, { expiresIn: "7d" });
+      const refreshToken = await generateToken(
+        { ...user },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -234,17 +240,26 @@ export default class UserController extends Controller<User> {
       if (!data.refreshToken) {
         throw new Error("No refreshToken provided");
       }
-      const token = await this.getDataSource().manager.findOne(entities.RefreshToken, {
-        where: {
-          token: data.refreshToken,
-        },
-        relations: ["user"],
-      });
+      const token = await this.getDataSource().manager.findOne(
+        entities.RefreshToken,
+        {
+          where: {
+            token: data.refreshToken,
+          },
+          relations: ["user"],
+        }
+      );
       if (!token) {
         throw new Error("No token found");
       }
-      const accessToken = await generateToken({ ...token.user }, { expiresIn: "1h" });
-      const refreshToken = await generateToken({ ...token.user }, { expiresIn: "7d" });
+      const accessToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "1h" }
+      );
+      const refreshToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -278,8 +293,14 @@ export default class UserController extends Controller<User> {
       if (!token) {
         throw new Error("No token found");
       }
-      const accessToken = await generateToken({ ...token.user }, { expiresIn: "1h" });
-      const refreshToken = await generateToken({ ...token.user }, { expiresIn: "7d" });
+      const accessToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "1h" }
+      );
+      const refreshToken = await generateToken(
+        { ...token.user },
+        { expiresIn: "7d" }
+      );
       if (!accessToken || !refreshToken) {
         throw new Error("Error generating tokens");
       }
@@ -304,11 +325,14 @@ export default class UserController extends Controller<User> {
       if (!data.refreshToken) {
         throw new Error("No refreshToken provided");
       }
-      const token = await this.getDataSource().manager.findOne(entities.RefreshToken, {
-        where: {
-          token: data.refreshToken,
-        },
-      });
+      const token = await this.getDataSource().manager.findOne(
+        entities.RefreshToken,
+        {
+          where: {
+            token: data.refreshToken,
+          },
+        }
+      );
       if (!token) {
         throw new Error("No token found");
       }

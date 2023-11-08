@@ -2,7 +2,6 @@ import { Router } from "express";
 import UserController from "../../controllers/User";
 import { checkAdmin, checkToken } from "../../middleware/auth";
 import Logger from "../../utils/logger";
-import { hasRole } from "../../utils/auth";
 
 const router = Router();
 const userRouterLogger = new Logger({ name: "User Router" });
@@ -164,11 +163,7 @@ router.get("/:id", checkToken, checkAdmin, async (req, res) => {
 
 router.put("/:id", checkToken, checkAdmin, async (req, res) => {
   try {
-    const decoded = req.body.decoded;
-
-    const allowRoleUpdate = hasRole(req.body.role, decoded.role);
-
-    const response = await userController.update(req.params.id, req.body, allowRoleUpdate);
+    const response = await userController.update(req.params.id, req.body);
 
     if (!response) {
       return res.status(404).json({
@@ -190,14 +185,6 @@ router.put("/:id", checkToken, checkAdmin, async (req, res) => {
 
 router.delete("/:id", checkToken, checkAdmin, async (req, res) => {
   try {
-    const allow = hasRole(req.body.role, req.body.decoded.role);
-
-    if (!allow) {
-      return res.status(403).json({
-        message: "Forbidden",
-      });
-    }
-
     const response = await userController.delete(req.params.id);
 
     if (!response) {

@@ -7,7 +7,6 @@ export interface UseFetchConfig<B, D> {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: B;
   onBefore?: () => void;
-  onConfirm?: () => boolean;
   onSuccess?: (data: D) => void;
   onError?: (err: unknown) => void;
   onFinally?: () => void;
@@ -24,7 +23,6 @@ function useFetch<B, D>({
   method = "GET",
   body,
   onBefore,
-  onConfirm,
   onSuccess,
   onError,
   onFinally,
@@ -60,10 +58,6 @@ function useFetch<B, D>({
     async (loadConfig?: { updatedUrl?: string; updatedBody?: B }) => {
       refreshHeaders();
       onBefore && onBefore();
-      const shouldContinue = onConfirm ? onConfirm() : true;
-      if (!shouldContinue) {
-        return;
-      }
       setLoading(true);
       return api<DefaultResponse<D>>(loadConfig?.updatedUrl || urlToUse, {
         method,

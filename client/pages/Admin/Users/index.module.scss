@@ -1,6 +1,7 @@
 @use "../../../styles/partials/variables" as *;
 
 .users {
+
 }
 
 .usertable {
@@ -12,20 +13,13 @@
     text-align: left;
   }
 
-  .userrow {
+  td {
+    padding: 1.4rem;
   }
-}
 
-.status_active {
-  color: $textColor;
-}
-
-.status_inactive {
-  opacity: 0.65;
-}
-
-.editing {
-  opacity: 1;
+  .role_superadmin {
+    color: $accentColor;
+  }
 }
 
 .action_btn {
@@ -41,63 +35,4 @@
   }
 }
 
-.power_active {
-  opcacity: 1;
-}
 
-.power_inactive {
-  opacity: 0.65;
-}
-
-td {
-  padding: 1.4rem;
-
-  .nameGroup {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.4rem;
-  }
-
-  input {
-    width: 100%;
-    box-sizing: border-box;
-    background-color: rgba($color: $textColor, $alpha: 0.15);
-    border: none;
-    border-radius: 0.5rem;
-    padding: 1.2rem 1.4rem;
-    color: $textColor;
-    transition: all 0.2s ease-in-out;
-
-    &:focus {
-      outline: none;
-      padding: 1.2rem 1.8rem;
-      background-color: rgba($color: $textColor, $alpha: 0.2);
-    }
-  }
-
-  select {
-    width: 100%;
-    box-sizing: border-box;
-    background-color: rgba($color: $textColor, $alpha: 0.15);
-    border: none;
-    border-radius: 0.5rem;
-    padding: 1.2rem 1.4rem;
-    color: $textColor;
-    transition: all 0.2s ease-in-out;
-
-    &:focus {
-      outline: none;
-      padding: 1.2rem 1.6rem;
-      background-color: rgba($color: $textColor, $alpha: 0.2);
-    }
-  }
-}
-
-.role {
-  text-transform: uppercase;
-}
-
-.role_superadmin {
-  font-weight: 600;
-}

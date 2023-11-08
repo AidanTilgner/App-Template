@@ -82,29 +82,3 @@ export const checkAdmin = async (req: Request, res: Response, next: NextFunction
     });
   }
 };
-
-export const requireActive = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { active } = req.body.decoded;
-    if (!active) {
-      authLogger.warn(
-        "Attempted access to protected route by inactive user",
-        JSON.stringify(getRequesterInfo(req)),
-        JSON.stringify(getRequestPath(req)),
-      );
-      return res.status(401).json({
-        message: "Unauthorized access",
-      });
-    }
-    next();
-  } catch (error) {
-    authLogger.error(
-      error,
-      JSON.stringify(getRequesterInfo(req)),
-      JSON.stringify(getRequestPath(req)),
-    );
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-};
