@@ -8,6 +8,7 @@ import Signup from "./Auth/Signup";
 import Home from "./pages/Home";
 import Users from "./pages/Admin/Users";
 import { useUser } from "./Contexts/User";
+import Timeline from "./pages/Timeline/Timeline";
 
 function App() {
   const { user } = useUser();
@@ -20,7 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Main />}>
-          <Route index element={<Home />} />
+          <Route index element={<Timeline />} />
           {is_admin && (
             <Route path="admin">
               <Route path="users" element={<Users />} />

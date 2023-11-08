@@ -1,0 +1,22 @@
+@use "../../styles/partials/variables" as *;
+@use "../../styles/partials/mixins" as *;
+
+.timeline {
+  display: flex;
+  height: calc(100vh - 6.4rem);
+  align-items: center;
+}
+
+.ribbon {
+  background-color: $primaryColor;
+  height: 40rem;
+  width: 100vw;
+}
+
+.timeline_item {
+  .item_title {
+    color: $backgroundColor;
+    font-family: $fontFamilyTwo;
+    font-size: 4.8rem;
+  }
+}
