@@ -5,11 +5,7 @@ import { logout } from "../../utils/auth";
 import styles from "./index.module.scss";
 
 function index() {
-  const {
-    isLoggedIn,
-    user: { role },
-  } = useUser();
-  const isAdmin = role.includes("admin");
+  const { isLoggedIn } = useUser();
 
   return (
     <div className={styles.home}>
@@ -30,13 +26,6 @@ function index() {
         >
           Logout
         </button>
-      )}
-      <br />
-      <br />
-      {isAdmin && (
-        <Link to="/admin/users">
-          <button className="btn btn-secondary">Admin Users</button>
-        </Link>
       )}
     </div>
   );
